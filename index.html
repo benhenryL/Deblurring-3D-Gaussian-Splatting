@@ -236,6 +236,14 @@
 					</div>
 					<img src="./static/images/compensation_depth.jpg" style="width:100%">
 
+          <p align="justify">3D-GS's reconstruction quality heavily relies on the initial point cloud which is obtained from structure-from-motion (SfM). 
+						However, SfM produces only sparse point clouds if the given images are blurry. Even worse, if the scene has a large depth of field 
+						which is prevalent in defocus blurry scenes, SfM hardly extracts any points that lie on the far end of the scene.
+						To make a dense point cloud, we add additional points on the periphery of the existing points using K-Nearest-Neighbor (KNN) algorithm during the training.
+						Furthermore, we prune 3D Gaussians depending on their relative depth. We loosely prune the 3D Gaussians placed on the far edge of the scene to keep 
+						more 3D Gaussians on the far plane.
+					</p>
+
         </div>
       </div>
     </div>

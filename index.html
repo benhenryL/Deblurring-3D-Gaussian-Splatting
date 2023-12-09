@@ -1,256 +1,425 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
+
 <head>
-	<title>Deblurring 3D Gaussian Splatting</title>
-	<meta charset="UTF-8">
-	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-	<link href="css/style.css" rel="stylesheet" type="text/css" />
-	<style>
-		html,
-		body,
-		h1,
-		h2,
-		h3,
-		h4,
-		h5,
-		h6 {
-			font-family: "Titillium Web", "HelveticaNeue-Light", "Helvetica Neue Light", "Helvetica Neue", Helvetica, Arial, "Lucida Grande", sans-serif;
-		}
+  <meta charset="utf-8">
+  <title>Deblurring 3D Gaussian Splatting</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-		< !-- .cite {
-			background: #f0f0f0;
-			padding: 10px;
-			font-size: 18px
-		}
+  <!-- Global site tag (gtag.js) - Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-PYVRSFMDRL"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
 
-		-->.cite {
-			padding: 0px;
-			background: #ffffff;
-			font-size: 18px
-		}
+    function gtag() {
+      dataLayer.push(arguments);
+    }
 
-		.card {
-			border: 1px solid #ccc
-		}
+    gtag('js', new Date());
 
-		img {
-			margin-bottom: -6px;
-		}
+    gtag('config', 'G-PYVRSFMDRL');
+  </script>
 
-		p {
-			font-size: 18px;
-		}
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
 
-		a {
-			text-decoration: none;
-			color: #2196F3;
-		}
-		
-		.bibtexsection {
-			width: 100%;
-			height: 12em;
-			font-family: "Courier", monospace;
-			/* font-size: 1vw; */
-			white-space: pre;
-			background-color: #f4f4f4;
-			margin-left: auto;
-			margin-right: auto;
-			text-align: left;
-		}
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <!-- <link rel="icon" href="./static/images/favicon.svg"> -->
 
-		.layered-paper-big {
-			/* modified from: http://css-tricks.com/snippets/css/layered-paper/ */
-			box-shadow:
-				0px 0px 1px 1px rgba(0, 0, 0, 0.35),
-				/* The top layer shadow */
-				5px 5px 0 0px #fff,
-				/* The second layer */
-				5px 5px 1px 1px rgba(0, 0, 0, 0.35),
-				/* The second layer shadow */
-				10px 10px 0 0px #fff,
-				/* The third layer */
-				10px 10px 1px 1px rgba(0, 0, 0, 0.35),
-				/* The third layer shadow */
-				15px 15px 0 0px #fff,
-				/* The fourth layer */
-				15px 15px 1px 1px rgba(0, 0, 0, 0.35),
-				/* The fourth layer shadow */
-				20px 20px 0 0px #fff,
-				/* The fifth layer */
-				20px 20px 1px 1px rgba(0, 0, 0, 0.35),
-				/* The fifth layer shadow */
-				25px 25px 0 0px #fff,
-				/* The fifth layer */
-				25px 25px 1px 1px rgba(0, 0, 0, 0.35);
-			/* The fifth layer shadow */
-			margin-left: 10px;
-			margin-right: 60px;
-		}
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
+  <script src="./static/js/script.js"></script>
 
-		table {
-			text-align: center;
-			margin-left: auto;
-			margin-right: auto;
-			border-collapse: collapse;
-		}
-
-		table> :is(thead, tbody)>tr> :is(th, td) {
-			padding: 3px;
-			text-align: center;
-		}
-
-		table>thead>tr> :is(th, td) {
-			border-top: 2px solid;
-			border-bottom: 1px solid;
-		}
-
-		table>tbody>tr:last-child> :is(th, td) {
-			border-bottom: 2px solid;
-		}
-
-		table>tbody {
-			border-top: 2px solid;
-			border-bottom: 1px solid;
-		}
-	</style>
 </head>
 
-<body class="w3-white">
-	<!-- Page Container -->
-	<div class="w3-content w3-margin-top w3-margin-bottom" style="max-width:960px;">
+<body>
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column has-text-centered">
+            <h1 class="title is-1 publication-title">Deblurring 3D Gaussian Splatting</h1>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block">
+                Byeonghyeon Lee<sup>1</sup><sup>*</sup>,</span>
+              <span class="author-block">
+                Howoong Lee<sup>1,2</sup><sup>*</sup>,</span>
+              <span class="author-block">
+                Xiangyu Sun<sup>1</sup>,</span>
+              <span class="author-block">
+                Usman Ali<sup>1</sup>,</span>
+              <span class="author-block">
+                Eunbyung Park<sup>1</sup></span>
 
-		<!-- The Grid -->
-		<div class="w3-row-padding">
+            </div>
 
-			<!-- paper container -->
-			<div class="w3-display-container w3-row w3-white w3-margin-bottom">
-				<div class="w3-center">
-					<h1>Deblurring 3D Gaussian Splatting</h1> 
-					<h5>Byeonghyeon Lee<sup>1*</sup>, Howoong Lee<sup>1,2*</sup>, Xiangyu Sun<sup>1</sup>, Usman Ali<sup>1</sup>, and Eunbyung Park<sup>1</sup></h5>
-					<h5><sup>1</sup>Sungkyunkwan University, <sup>2</sup>Hanhwa Vision</h5>
-					<h5><sup>*</sup>Equal contribution</h5>
-				</div>
+            <div class="is-size-5 publication-authors">
+              <span class="author-block"><sup>1</sup>Sungkyunkwan University</span>
+              <span class="author-block"><sup>2</sup>Hanhwa Vision</span> <br>
+              <span class="author-block"><sup>*</sup>Equal contribution</span>
+            </div>
+            <div class="column has-text-centered">
+                <span class="link-block">
+                <a href=""
+                   class="external-link button is-normal is-rounded is-dark">
+                  <span class="icon">
+                      <i class="fas fa-file-pdf"></i>
+                  </span>
+                  <span>Paper</span>
+                </a>
+                </span>
+                <!-- Code Link. -->
+                <span class="link-block">
+                  <a href="https://github.com/benhenryL/Deblurring-3D-Gaussian-Splatting"
+                    class="external-link button is-normal is-rounded is-dark">
+                    <span class="icon">
+                      <i class="fab fa-github"></i>
+                    </span>
+                    <span>Code</span>
+                  </a>
+                </span>
+              </div>
 
-				<div class="w3-center">
-					<h3>[<a href="https://github.com/benhenryL/Deblurring-3D-Gaussian-Splatting">Code</a>] &emsp; [<a href="">Paper</a>]</h3>
-				</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-				<hr>
-				<div class="w3-center">
-					<h2>Abstract</h2>
-				</div>
-				<div class="w3-display-container w3-row w3-white w3-margin-bottom w3-center">
-				</div>
-				<div align="center">
-					<img src="images/FPS_curve.png" style="width:50%">
-				</div>
-				
-				<!-- <img src="images/FPS_curve.png" style="width:50%; margin-left: 10px; margin-right:25px; margin-top:0px; float:right"> -->
-				<p align="justify">Novel-view synthesis of scenes acquired with several images or videos has been revolutionized by Radiance Field techniques. However, their high visual quality was achieved only with neural networks, which are costly to train and do not provide real-time rendering. Recently, 3D Gaussians splatting-based approach has been proposed to model the 3D scene, and it achieves state-of-the-art visual quality as well as renders in real-time. However, this approach suffers from severe degradation in the rendering quality if the training images are blurry. Several previous studies have attempted to render clean and sharp images from blurry input images using neural fields. However, the majority of those works are designed only for volumetric rendering-based neural fields and are not applicable to rasterization-based approaches. To fill this gap, we propose a novel neural field-based deblurring framework for the recently proposed rasterization-based approaches, 3D Gaussians, and rasterization. Specifically, we employ a small Multi-Layer Perceptron (MLP), which manipulates the covariance of each 3D Gaussian to model the scene blurriness. While deblurring 3D Gaussian Splatting can still enjoy real-time rendering, it can reconstruct fine and sharp details from blurry images. A variety of experiments have been conducted on the benchmark, and the results have revealed the effectiveness of our approach for deblurring.</p>
-				
-				<hr>
-				<div class="w3-center">
-					<h2>Deblurring 3D Gaussians</h2>
-				</div>
-				<div class="w3-display-container w3-row w3-white w3-margin-bottom">
-					<!-- <img src="images/new_synthetic.png" style="width:37%">
-						<img src="images/fig_level.png" style="width:35%; margin-top:-10px"> -->
-					<img src="images/workflow.png" style="width:100%">
-					<p align="justify">We learn the deblurring by transforming the geometry of the 3D Gaussians. To do so, we have employed an MLP that takes
-						the position, rotation, scale, and viewing direction of 3D Gaussians as inputs, and outputs offsets for rotation and scale.
-						Then these offsets are element-wisely multiplied to rotation and scale, respectively, to obtain the transformed geometry of the 3D Gaussians.</p>
-					<div align="center">
-						<img src="images/deltas3_page.jpg" style="width:80%">
-					</div>
-					<p align="justify">Since we predict the offsets for each Gaussian, we can selectively enlarge the covariances of Gaussians where the parts in the training images are blurred. This flexibility enables us to
-						effectively implement deblurring capability in 3D-GS. On the other hand, a naive approach to blurring the rendered image is simply to apply a Gaussian kernel which is not capable of handling each part of the image differently but blurs
-						the entire image.</p>
-				</div>
 
-				<hr>
-				<div class="w3-center">
-					<h2>Compensation for Sparse Point Cloud</h2>
-				</div>
-				<div class="w3-display-container w3-row w3-white w3-margin-bottom w3-center">
-					<div style="display: inline-block; width:33%; ">
-						<div style="padding-right:20px"><h3>Input Image</h3></div>
+<section class="hero is-light is-small">
+  <div class="hero-body">
+    <div class="container">
+      <div id="results-carousel" class=" carousel results-carousel">
+        <div class="item item-cake">
+          <video poster="" id="cake" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/cake.mp4" type="video/mp4">
+          </video>
+        </div>
+        
+        <div class="item item-caps">
+          <video poster="" id="caps" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/caps.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-cisco">
+          <video poster="" id="cisco" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/cisco.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-cups">
+          <video poster="" id="cups" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/cups.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-daisy">
+          <video poster="" id="daisy" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/daisy.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-seal">
+          <video poster="" id="seal" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/seal.mp4" type="video/mp4">
+          </video>
+        </div>
+        <div class="item item-coral">
+          <video poster="" id="coral" autoplay controls muted loop playsinline height="100%">
+            <source src="./static/videos/coral.mp4" type="video/mp4">
+          </video>
+        </div>
+      <div class="item item-cupcake">
+        <video poster="" id="cupcake" autoplay controls muted loop playsinline height="100%">
+          <source src="./static/videos/cupcake.mp4"
+                  type="video/mp4">
+        </video>
+      </div>
+      <div class="item item-sausage">
+        <video poster="" id="sausage" autoplay controls muted loop playsinline height="100%">
+          <source src="./static/videos/sausage.mp4"
+                  type="video/mp4">
+        </video>
+      </div>
+      <div class="item item-tools">
+        <video poster="" id="tools" autoplay controls muted loop playsinline height="100%">
+          <source src="./static/videos/tools.mp4"
+                  type="video/mp4">
+        </video>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <!-- Abstract. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-four-fifths">
+          <h2 class="title is-3">Abstract</h2>
+          <div align="center">
+            <img src="static/images/FPS_curve.png" style="width:60%">
+          </div>
+          <div class="content has-text-justified">
+            <p>
+              Novel-view synthesis of scenes acquired with several images or videos has been revolutionized by Radiance Field techniques. However, their high visual quality was achieved only with neural networks, which are costly to train and do not provide real-time rendering. Recently, 3D Gaussians splatting-based approach has been proposed to model the 3D scene, and it achieves state-of-the-art visual quality as well as renders in real-time. However, this approach suffers from severe degradation in the rendering quality if the training images are blurry. Several previous studies have attempted to render clean and sharp images from blurry input images using neural fields. However, the majority of those works are designed only for volumetric rendering-based neural fields and are not applicable to rasterization-based approaches. To fill this gap, we propose a novel neural field-based deblurring framework for the recently proposed rasterization-based approaches, 3D Gaussians, and rasterization. Specifically, we employ a small Multi-Layer Perceptron (MLP), which manipulates the covariance of each 3D Gaussian to model the scene blurriness. While deblurring 3D Gaussian Splatting can still enjoy real-time rendering, it can reconstruct fine and sharp details from blurry images. A variety of experiments have been conducted on the benchmark, and the results have revealed the effectiveness of our approach for deblurring.
+            </p>
+
+          </div>
+        </div>
+      </div>
+      <!--/ Abstract. -->
+
+      <!-- Paper video. -->
+    </div>
+  </section>
+
+
+
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <!-- Concurrent Work. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Deblurring 3D Gaussians</h2>
+          <div class="content has-text-justified">
+            <img src="./static/images/workflow.png">
+            <p align="justify">We learn the deblurring by transforming the geometry of the 3D Gaussians. To do so, we have employed an MLP that takes
+              the position, rotation, scale, and viewing direction of 3D Gaussians as inputs, and outputs offsets for rotation and scale.
+              Then these offsets are element-wisely multiplied to rotation and scale, respectively, to obtain the transformed geometry of the 3D Gaussians.</p>
+            <img src="./static/images/deltas3_page.jpg">
+            <p align="justify">Since we predict the offsets for each Gaussian, we can selectively enlarge the covariances of Gaussians where the parts in the training images are blurred. This flexibility enables us to
+              effectively implement deblurring capability in 3D-GS. On the other hand, a naive approach to blurring the rendered image is simply to apply a Gaussian kernel which is not capable of handling each part of the image differently but blurs
+              the entire image.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
+  <section class="section">
+    <div class="container is-max-desktop">
+      <!-- Concurrent Work. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Compensation for Sparse Point Cloud</h2>
+          <div style="display: inline-block; width:33%; ">
+						<div class="img_tag" style="padding-right:20px"><h3>Input Image</h3></div>
 					</div>
 					<div style="display: inline-block; width:33%">
-						<div style=""><h3>w/o Compensation</h3></div>
+						<div class="img_tag"><h3>w/o Compensation</h3></div>
 					</div>
 					<div style="display: inline-block; width:33%">
-						<div style=""><h3>w/ Compensation (Ours)</h3></div>
+						<div class="img_tag"><h3>w/ Compensation (Ours)</h3></div>
 					</div>
-					<img src="images/compensation.jpg" style="width:100%">
-					
-					
-					<div style="margin-top: 40px">
+					<img src="./static/images/compensation.jpg" style="width:100%">
+
+          <div style="margin-top: 40px">
 						<div style="display: inline-block; width:33%; ">
-							<div><h3 style="text-align:right">w/o Compensation</h3></div>
+							<div class="img_tag"><h3 style="text-align:right">w/o Compensation</h3></div>
 						</div>
 						<div style="display: inline-block; width:30%; ">
-							<div><h3 style="text-align:left"> </h3></div>
+							<div class="img_tag"><h3 style="text-align:left"> </h3></div>
 						</div>
 						<div style="display: inline-block; width:36%;">
-							<div><h3 style="text-align:left">w/ Compensation (Ours)</h3></div>
+							<div class="img_tag"><h3 style="text-align:left">w/ Compensation (Ours)</h3></div>
 						</div>
 					</div>
-					<img src="images/compensation_depth.jpg" style="width:100%">
+					<img src="./static/images/compensation_depth.jpg" style="width:100%">
 
-					<!-- <p align="center">Masked wavelet coefficients</p>
-					<div style="display: inline-block; width:35%">
-						<img src="images/spatial_0.png" style="width:100%">
-					</div> -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container ">
+      <div class=" has-text-centered">
+        <h2 class="title is-3">Visual Comparisons</h2>
+        <div class="content has-text-justified">
+          <p>
+
+          </p>
+        </div>
+        <div class="columns is-centered">
+          <!-- Visual Effects. -->
+          <div class="column">
+            <div class="content">
+              <div class="columns is-centered">
+                <div class="column is-full-width">
+                  <div id="example1" class="bal-container-small">
+
+                    <div class="bal-after">
+                      <img src="./static/images/comparsion/cake.png">
+                      <div class="bal-afterPosition afterLabel" style="z-index:1;">
+                        Ours
+                      </div>
+                    </div>
+                    
+                    <div class="bal-before" style="width:96.4968152866242%;">
+                      <div class="bal-before-inset" style="width: 539px;">
+                        <img src="./static/images/comparsion/gs_cake.png">
+                        <div class="bal-beforePosition beforeLabel">
+                          3D-GS
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="bal-handle" style="left:96.4968152866242%;">
+                      <span class=" handle-left-arrow"></span>
+                      <span class="handle-right-arrow"></span>
+                    </div>
+
+                  </div>
 
 
-					<p align="justify">3D-GS's reconstruction quality heavily relies on the initial point cloud which is obtained from structure-from-motion (SfM). 
-						However, SfM produces only sparse point clouds if the given images are blurry. Even worse, if the scene has a large depth of field 
-						which is prevalent in defocus blurry scenes, SfM hardly extracts any points that lie on the far end of the scene.
-						To make a dense point cloud, we add additional points on the periphery of the existing points using K-Nearest-Neighbor (KNN) algorithm during the training.
-						Furthermore, we prune 3D Gaussians depending on their relative depth. We loosely prune the 3D Gaussians placed on the far edge of the scene to keep 
-						more 3D Gaussians on the far plane.
-					</p>
-				</div>
+                  <div id="example2" class="bal-container-small">
 
-				<hr>
+                    <div class="bal-after">
+                      <img src="./static/images/comparsion/cisco.png">
+                      <div class="bal-afterPosition afterLabel">
+                        Ours
+                      </div>
+                    </div>
 
-				<div class="w3-center">
-					<h2>Qualitative Results</h2>
-				</div>
-				
+                    <div class="bal-before" style="width: 50%;">
+                      <div class="bal-before-inset" style="width: 539px;">
+                        <img src="./static/images/comparsion/gs_cisco.png">
+                        <div class="bal-beforePosition beforeLabel">
+                          3D-GS
+                        </div>
+                      </div>
+                    </div>
 
-				<img src="images/qualitative_result_row_comp.jpg" style="width:100%">
-				
-				<hr>
-				<div class="w3-center">
-					<h2>Bibtex</h2>
-				</div>
-				<textarea class="bibtexsection" readonly>
+                    <div class="bal-handle" style="left: 50%;">
+                      <span class=" handle-left-arrow"></span>
+                      <span class="handle-right-arrow"></span>
+                    </div>
 
-				</textarea>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
 
-				<hr>
-				<div class="w3-center">
-					<p class="text-justify">
-						This website is partially borrowed from <a href="https://leonidk.github.io/fuzzy-metaballs/">Fuzzy Metaballs</a>.
-					</p>
-				</div>
-			</div>
-			<!-- end paper container -->
 
-		</div><!-- End Grid -->
-	</div><!-- End Page Container -->
+          <!--/ Visual Effects. -->
+
+          <!-- Matting. -->
+          <div class="column">
+            <div class="columns is-centered">
+              <div class="column content">
+
+                <div id="example4" class="bal-container-small">
+                  <div class="bal-after">
+                    <img src="./static/images/comparsion/caps.png">
+                    <div class="bal-afterPosition afterLabel" style="z-index:1;">
+                      Ours
+                    </div>
+                  </div>
+
+                  <div class="bal-before" style="width:62.10191082802548%;">
+                    <div class="bal-before-inset" style="width: 539px;">
+                      <img src="./static/images/comparsion/gs_caps.png">
+                      <div class="bal-beforePosition beforeLabel">
+                        3D-GS
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bal-handle" style="left:62.10191082802548%;">
+                    <span class=" handle-left-arrow"></span>
+                    <span class="handle-right-arrow"></span>
+                  </div>
+
+                </div>
+
+                <div id="example5" class="bal-container-small">
+                  <div class="bal-after">
+                    <img src="./static/images/comparsion/tools.png">
+                    <div class="bal-afterPosition afterLabel" style="z-index:1;">
+                      Ours
+                    </div>
+                  </div>
+
+                  <div class="bal-before" style="width:56.77179962894249%;">
+                    <div class="bal-before-inset" style="width: 628px;">
+                      <img src="./static/images/comparsion/gs_tools.png">
+                      <div class="bal-beforePosition beforeLabel">
+                        3D-GS
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="bal-handle" style="left:56.77179962894249%;">
+                    <span class=" handle-left-arrow"></span>
+                    <span class="handle-right-arrow"></span>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    new BeforeAfter({
+      id: '#example1'
+    });
+    new BeforeAfter({
+      id: '#example2'
+    });
+    new BeforeAfter({
+      id: '#example4'
+    });
+    new BeforeAfter({
+      id: '#example5'
+    });
+
+  </script>
+  
+<!-- <section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+    <pre><code></code></pre>
+  </div>
+</section> -->
+
+  <footer class="footer">
+    <div class="container">
+      <div class="content has-text-centered">
+        <a class="icon-link" href="">
+          <i class="fas fa-file-pdf"></i>
+        </a>
+        <a class="icon-link" href="https://github.com/benhenryL/Deblurring-3D-Gaussian-Splatting" class="external-link" disabled>
+          <i class="fab fa-github"></i>
+        </a>
+      </div>
+      <div class="columns is-centered">
+        <div class="column is-8">
+          <div class="content">
+            <p>
+              This website borrowed template from <a href="https://github.com/nerfies/nerfies.github.io">nerfies</a> 
+              and <a href="https://github.com/lightgaussian/lightgaussian.github.io">lightgaussian</a>.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
 
 </body>
-<script
-defer
-src="https://unpkg.com/img-comparison-slider@7/dist/index.js"
-></script>
-<script type="text/javascript" src="js/main.js"></script> 
-<link
-  rel="stylesheet"
-  href="https://unpkg.com/img-comparison-slider@7/dist/styles.css"
-/>
 
 </html>

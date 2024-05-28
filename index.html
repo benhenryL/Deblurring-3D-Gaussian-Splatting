@@ -166,7 +166,7 @@
         <div class="column is-four-fifths">
           <h2 class="title is-3">Abstract</h2>
           <div align="center">
-            <img src="static/images/FPS_curve.png" style="width:60%">
+            <img src="static/images/FPS_curve.jpg" style="width:100%">
           </div>
           <div class="content has-text-justified">
             <p>
@@ -192,10 +192,13 @@
         <div class="column is-full-width">
           <h2 class="title is-3">Deblurring 3D Gaussians</h2>
           <div class="content has-text-justified">
-            <img src="./static/images/workflow.png">
+            <div style="margin-top: 20px">
+              <img src="./static/images/workflow.png">
+            </div>
             <p align="justify">We learn the deblurring by transforming the geometry of the 3D Gaussians. To do so, we have employed an MLP that takes
               the position, rotation, scale, and viewing direction of 3D Gaussians as inputs, and outputs offsets for rotation and scale.
               Then these offsets are element-wisely multiplied to rotation and scale, respectively, to obtain the transformed geometry of the 3D Gaussians.</p>
+            </div>
             <img src="./static/images/deltas3_page.jpg">
             <p align="justify">Since we predict the offsets for each Gaussian, we can selectively enlarge the covariances of Gaussians where the parts in the training images are blurred. This flexibility enables us to
               effectively implement deblurring capability in 3D-GS. On the other hand, a naive approach to blurring the rendered image is simply to apply a Gaussian kernel which is not capable of handling each part of the image differently but blurs
@@ -244,6 +247,59 @@
 						more 3D Gaussians on the far plane.
 					</p>
 
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <!-- Concurrent Work. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Visualization of Defocus and Camera Motion blur</h2>
+          <div style="display: inline-block; width:100%; ">
+						<div class="img_tag" style="padding-right:20px"><h3>Gaussians visualization for defocus blur</h3></div>
+					</div>
+					<img src="./static/images/gaussian_visualization.jpg" style="width:100%">
+
+          <p align="justify">This figure visualizes the original and transformed 3D Gaussians for
+            defocus blur. With a given view whose near plane is defocused, the transformed
+            3D Gaussians show larger scales than those of the original 3D Gaussians to
+            model defocus blur on the near plane (blur-bordered images). Meanwhile, the
+            transformed 3D Gaussians keep very similar shapes to the original ones for sharp
+            objects in the far plane (red-bordered images). 
+					</p>
+          <div style="margin-top: 30px">
+            <div style="display: inline-block; width:100%; ">
+              <div class="img_tag" style="padding-right:20px"><h3>Point cloud visualization for camera motion blur</h3></div>
+            </div>
+            <img src="./static/images/pointcloud_visualization.jpg" style="width:100%">
+
+            <p align="justify">This figure depicts point clouds of the original 3D Gaussians and transformed 3D Gaussians.
+              The point cloud of the transformed 3D Gaussians exhibits camera movements when the camera moves left to right.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container is-max-desktop">
+      <!-- Concurrent Work. -->
+      <div class="columns is-centered has-text-centered">
+        <div class="column is-full-width">
+          <h2 class="title is-3">Selective Gaussian blur adjustment</h2>
+					<img src="./static/images/selective_figure_ext.jpg" style="width:100%">
+
+          <p align="justify">Selective Gaussian blur adjustment. As delineated in this figure, our methodology
+            adeptly harnesses the δrj , δsj both emanating from compact Multi-Layer Perceptrons
+            (MLP), enabling the inversion of Gaussian blur regions or the comprehensive modulation of overall blurriness and sharpness. 
+            With the Transformation of δrj , δsj , our framework facilitates the nuanced blurring of proximal regions akin to A, as well as
+            the deft blurring of distant locales akin to B. Furthermore, it offers the capability to
+            manipulate the global blurriness or sharpness, exemplified by adjustments akin to C and D.
+					</p>
         </div>
       </div>
     </div>

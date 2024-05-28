@@ -1,0 +1,7 @@
+densify_grad_threshold = 0.0005
+densify_prune_threshold = 0.01
+lambda_s = 0.005
+lambda_p = 0.001
+use_pos = 1
+scaling_lr = 0.015
+resolution = 1

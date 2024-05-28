@@ -412,7 +412,7 @@ class GaussianModel:
         grads[grads.isnan()] = 0.0
 
         self.densify_and_clone(grads, max_grad, extent)
-        self.densify_and_split(grads, max_grad, extent, depth=None)
+        self.densify_and_split(grads, max_grad, extent)
 
         if prune_depth: 
             depth = self.get_xyz[...,-1]

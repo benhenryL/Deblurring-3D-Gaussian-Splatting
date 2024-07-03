@@ -1,4 +1,4 @@
-# Deblurring-3D-Gaussian-Splatting
+# Deblurring-3D-Gaussian-Splatting (ECCV 2024)
 
 Byeonghyeon Lee*, Howoong Lee*, Xiangyu Sun, Usman Ali, and Eunbyung Park
 
